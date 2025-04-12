@@ -3,4 +3,4 @@
 ## Lien :  
 
 ### V1.0.1 : Lancement  
-V1.2 : Contrôles améliorés
+### V1.1 : Contrôles améliorés
