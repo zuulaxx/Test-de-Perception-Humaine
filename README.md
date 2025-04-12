@@ -1,1 +1,1 @@
-⚠️ Fait en partie par l'IAv
+⚠️ Fabriqué en partie par l'IA !
