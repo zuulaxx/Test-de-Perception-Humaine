@@ -1,6 +1,6 @@
 # ⚠️ Fabriqué en partie par l'IA !
 
-## Lien :
+## Lien : https://bit.ly/SensTest
 
 ### **Versions :**  
 **V1.0.1 :** Lancement  
