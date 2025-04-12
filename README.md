@@ -1,7 +1,7 @@
-# ⚠️ Fabriqué en partie par l'IA !  
+# ⚠️ Fabriqué en partie par l'IA !
 
-## Lien :  
+## Lien :
 
-### <u>Versions :</u>  
-**V1.0.1 :** Lancement  
-**V1.1 :** Contrôles améliorés
+### **Versions :**  
+**V1.0.1 :** Lancement  
+**V1.1 :** Contrôles améliorés
