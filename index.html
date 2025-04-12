@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Test de Perception Humaine</title>
+  <link rel="icon" type="image/png" href="Human_Perception_Test.png" />
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #f1f1f1, #e2e2e2);
+      color: #333;
+      padding: 40px;
+      text-align: center;
+    }
+    
+    /* Section Header */
+header {
+  display: flex;
+  justify-content: center; /* Centrer le contenu */
+  align-items: center;     /* Aligner verticalement */
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px; /* Espacement entre le logo et le texte */
+}
+
+#logo {
+  width: 80px; /* Taille du logo */
+  height: 80px;
+  border-radius: 50%; /* Arrondir le logo */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Ombre pour donner du relief */
+  transition: transform 0.3s ease-in-out; /* Effet de transition pour l'animation */
+}
+
+#logo:hover {
+  transform: scale(1.1); /* Agrandir le logo lors du survol */
+}
+
+h1 {
+  font-size: 36px;
+  color: #2c3e50; /* Couleur sombre et élégante */
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation: fadeIn 1s ease-out; /* Animation du titre pour l'entrée */
+}
+
+/* Animation du fadeIn pour le titre */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pour les écrans plus petits (tablettes et mobiles) */
+@media (max-width: 768px) {
+  #logo {
+    width: 60px; /* Logo plus petit sur mobile */
+    height: 60px;
+  }
+  h1 {
+    font-size: 28px; /* Taille du texte réduite sur mobile */
+  }
+}
+
+
+    header img {
+      width: 60px;
+      height: 60px;
+      margin-right: 20px;
+    }
+    header h1 {
+      font-size: 32px;
+      color: #2c3e50;
+      margin: 0;
+      text-align: left;
+    }
+    section {
+      margin: 40px 0;
+      padding: 25px;
+      background-color: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    #circle {
+      width: 100px;
+      height: 100px;
+      margin: 30px auto;
+      border-radius: 50%;
+      background-color: red;
+    }
+    input[type=range] {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      background: #ecf0f1;
+      border: 1px solid #bdc3c7;
+      border-radius: 8px;
+      outline: none;
+      height: 20px;
+    }
+    .warning {
+      color: #e74c3c;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .audibility {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #34495e;
+      margin-top: 15px;
+    }
+    .sound-control {
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin: 5px;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    #resetButton {
+      background-color: #e74c3c;
+    }
+    #resetButton:hover {
+      background-color: #c0392b;
+    }
+    .card {
+      display: inline-block;
+      width: 45%;
+      vertical-align: top;
+      margin: 20px 2%;
+    }
+    @media (max-width: 768px) {
+      .card { width: 100%; }
+      header { flex-direction: column; align-items: center; }
+      header h1 { text-align: center; font-size: 28px; }
+      header img { margin-right: 0; margin-bottom: 10px; }
+    }
+    #waveVisual {
+      width: 100%;
+      height: 60px;
+      background-color: #ecf0f1;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+
+    input[type=range] {
+  width: 100%;
+  margin: 10px 0;
+  padding: 0;
+  background: transparent; /* Pour enlever les arrières plans inutiles */
+  border: 1px solid #bdc3c7;
+  border-radius: 8px;
+  outline: none;
+  height: 20px;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <img src="Human_Perception_Test.png" alt="Logo" id="logo">
+      <h1>Test de Perception Humaine</h1>
+    </div>
+  </header>  
+
+  <div class="card">
+    <section id="screenInfo">
+      <h2>Infos :</h2>
+      <p>Hz détectés de l'écran : <span id="screenHz">Calcul en cours...</span></p>
+      <p>Ping en temps réel : <span id="pingTime">N/A</span></p>
+    </section>
+  </div>
+
+  <div class="card">
+    <section id="fpsTest">
+      <h2>Perception Visuelle (Clignotement LED)</h2>
+      <p>Ajustez la fréquence du clignotement de la LED.</p>
+      <div id="circle"></div>
+      <br/>
+      <label for="fpsSlider">Fréquence (Hz) :</label>
+      <input type="range" min="1" max="1000" value="1" step="1" id="fpsSlider" oninput="updateTargetHz(this.value)">
+      <span id="fpsValue">1 Hz</span>
+      <p id="visualLimitMsg" class="warning"></p>
+    </section>
+  </div>
+
+  <div class="card">
+    <section id="audioTest">
+      <h2>Test d'Audition (Hz)</h2>
+      <p>⚠️ L'humain entend généralement entre 20 Hz et 20 000 Hz.</p>
+      <label for="freqSlider">Fréquence :</label>
+      <input type="range" min="1" max="25000" value="1" step="1" id="freqSlider" oninput="updateFrequencyFromSlider(this.value)">
+      <span id="freqValue">1 Hz</span>
+      <br><br>
+      <label for="volumeSlider">Volume :</label>
+      <input type="range" min="0" max="100" value="100" step="1" id="volumeSlider" oninput="updateVolume(this.value)">
+      <span id="volumeValue">100%</span>
+      <div class="audibility">
+        Audibilité estimée : <span id="audibilityPercentage">100%</span>
+      </div>
+      <canvas id="waveVisual"></canvas>
+      <div class="sound-control">
+        <button onclick="startSound()">Jouer</button>
+        <button onclick="stopSound()">Stop</button>
+      </div>
+    </section>
+  </div>
+
+  <section><button id="resetButton" onclick="resetAll()">Réinitialiser</button></section>
+
+  <script>
+    let audioCtx, oscillator, analyser, dataArray, gainNode;
+    let circle = document.getElementById("circle");
+    let lastToggleTime = performance.now();
+    let visible = true;
+    let targetHz = 1;
+    let currentAudioHz = 1;
+    let visualMsg = document.getElementById("visualLimitMsg");
+
+    function animateCircle(timestamp) {
+      let interval = 1000 / (targetHz * 2);
+      if (timestamp - lastToggleTime >= interval) {
+        visible = !visible;
+        circle.style.backgroundColor = visible ? "red" : "#f5f5f5";
+        lastToggleTime = timestamp;
+      }
+      requestAnimationFrame(animateCircle);
+    }
+    requestAnimationFrame(animateCircle);
+
+    function updateTargetHz(value) {
+  targetHz = parseInt(value); // Met à jour la fréquence cible
+  document.getElementById("fpsValue").innerText = value + " Hz"; // Affiche la fréquence sélectionnée
+  
+  // Message d'avertissement si la fréquence dépasse 60 Hz
+  if (targetHz >= 60) {
+    visualMsg.textContent = "⚠️ Au-delà de 60 Hz, il est difficile pour l'œil humain de percevoir un clignotement.";
+  } else {
+    visualMsg.textContent = "";
+  }
+}
+
+
+    function updateFrequencyFromSlider(value) {
+      currentAudioHz = parseInt(value);
+      document.getElementById("freqValue").innerText = value + " Hz";
+      updateAudibilityPercentage(currentAudioHz);
+      if (oscillator) {
+        oscillator.frequency.setValueAtTime(currentAudioHz, audioCtx.currentTime);
+      }
+    }
+
+    function updateVolume(value) {
+      document.getElementById("volumeValue").innerText = value + "%";
+      if (gainNode) gainNode.gain.setValueAtTime(value / 100, audioCtx.currentTime);
+    }
+
+    function startSound() {
+      stopSound();
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      oscillator = audioCtx.createOscillator();
+      gainNode = audioCtx.createGain();
+      analyser = audioCtx.createAnalyser();
+
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(currentAudioHz, audioCtx.currentTime);
+      oscillator.connect(gainNode);
+      gainNode.connect(analyser);
+      analyser.connect(audioCtx.destination);
+
+      gainNode.gain.setValueAtTime(document.getElementById("volumeSlider").value / 100, audioCtx.currentTime);
+      oscillator.start();
+      visualize();
+    }
+
+    function stopSound() {
+      if (oscillator) {
+        oscillator.stop();
+        oscillator.disconnect();
+        oscillator = null;
+      }
+    }
+
+    function visualize() {
+  const canvas = document.getElementById("waveVisual");
+  const ctx = canvas.getContext("2d");
+  analyser.fftSize = 256;
+  const bufferLength = analyser.frequencyBinCount;
+  dataArray = new Uint8Array(bufferLength);
+
+  // Ajustement de la taille du canvas
+  canvas.height = 100;  // Taille de l'onde (hauteur du canvas)
+  canvas.width = window.innerWidth * 0.9;  // Largeur dynamique pour occuper l'espace disponible
+
+  function draw() {
+    requestAnimationFrame(draw);
+    analyser.getByteTimeDomainData(dataArray);
+    ctx.fillStyle = "#ecf0f1";
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Efface le canvas
+
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#2c3e50"; // Couleur de l'onde
+
+    ctx.beginPath();
+    let sliceWidth = canvas.width / bufferLength;
+    let x = 0;
+
+    // Dessiner la courbe sinusoïdale
+    for (let i = 0; i < bufferLength; i++) {
+      let y = (dataArray[i] / 128.0) * canvas.height / 2; // Amplitude de l'onde
+      if (i === 0) {
+        ctx.moveTo(x, y); // Initialiser le point de départ
+      } else {
+        ctx.lineTo(x, y); // Tracer chaque segment de l'onde
+      }
+      x += sliceWidth;
+    }
+
+    // Fermer la courbe pour qu'elle se rejoigne au centre
+    ctx.lineTo(canvas.width, canvas.height / 2);
+    ctx.stroke();  // Afficher l'onde sur le canvas
+  }
+
+  draw();
+}
+
+
+    function resetAll() {
+      updateTargetHz(1);
+      document.getElementById("fpsSlider").value = 1;
+      updateFrequencyFromSlider(1);
+      document.getElementById("freqSlider").value = 1;
+      document.getElementById("volumeSlider").value = 100;
+      updateVolume(100);
+      stopSound();
+    }
+
+    function updateAudibilityPercentage(freq) {
+    let percentage = 0;
+    if (freq >= 20000) percentage = 10;  // Ultrasons, perceptible par une très petite proportion des humains
+    else if (freq >= 15000) percentage = 30;
+    else if (freq >= 10000) percentage = 60;
+    else if (freq >= 5000) percentage = 80;
+    else if (freq >= 1000) percentage = 90;
+    else if (freq >= 20) percentage = 100;  // Plage auditive normale (20 Hz à 20 000 Hz)
+    else percentage = 0;  // Les fréquences sous 20 Hz sont en dehors de la plage auditive
+    document.getElementById("audibilityPercentage").innerText = percentage + "%";
+}
+
+    let frameTimes = [];
+    function detectRefreshRate() {
+      const now = performance.now();
+      while (frameTimes.length > 0 && now - frameTimes[0] > 1000) frameTimes.shift();
+      frameTimes.push(now);
+      document.getElementById("screenHz").innerText = frameTimes.length + " Hz";
+
+      const pingStart = performance.now();
+      setTimeout(() => {
+        const pingEnd = performance.now();
+        document.getElementById("pingTime").innerText = (pingEnd - pingStart).toFixed(2) + " ms";
+      }, 50);
+
+      requestAnimationFrame(detectRefreshRate);
+    }
+    requestAnimationFrame(detectRefreshRate);
+  </script>
+</body>
+</html>
