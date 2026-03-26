@@ -10,3 +10,4 @@
 **V1.0.1 :** Lancement  
 **V1.1 :** Contrôles améliorés  
 **V1.2 :** Amélioration de l'interface
+**V1.3 :** Amélioration globale de l'expérience utilisateur
