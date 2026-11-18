@@ -2,475 +2,1317 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Test de Perception Humaine & Réseau Continu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test de Perception Humaine</title>
+  <meta name="description" content="Testez votre audition, votre perception du clignotement, la fréquence de votre écran et votre connexion réseau, directement dans le navigateur." />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232563eb'/%3E%3Cpath d='M8 32h8l5-14 8 28 7-22 5 12 4-4h11' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <style>
     :root {
-      --primary: #3498db; /* Bleu pour Réception */
-      --primary-hover: #2980b9;
-      --danger: #e74c3c;  /* Rouge pour Envoi */
-      --danger-hover: #c0392b;
-      --success: #2ecc71;
-      --bg-color: #f4f7f6;
-      --card-bg: #ffffff;
-      --text-main: #2c3e50;
-      --text-muted: #7f8c8d;
+      --bg: #f3f5f9;
+      --surface: #ffffff;
+      --surface-2: #f6f8fb;
+      --border: #e3e8ef;
+      --text: #0f172a;
+      --muted: #5b6474;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-soft: #dbe7ff;
+      --upload: #8b5cf6;
+      --danger: #dc2626;
+      --danger-hover: #b91c1c;
+      --success: #16a34a;
+      --warning-bg: #fff7e6;
+      --warning-text: #92400e;
+      --warning-border: #f5d48a;
+      --canvas-bg: #0f172a;
+      --wave: #60a5fa;
+      --shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 8px 24px rgba(15, 23, 42, .06);
+      --radius: 16px;
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0b1120;
+        --surface: #121a2b;
+        --surface-2: #182236;
+        --border: #24304a;
+        --text: #e5ebf5;
+        --muted: #94a0b8;
+        --primary: #3b82f6;
+        --primary-hover: #60a5fa;
+        --primary-soft: #1b2b4d;
+        --upload: #a78bfa;
+        --danger: #ef4444;
+        --danger-hover: #f87171;
+        --success: #22c55e;
+        --warning-bg: #2a2110;
+        --warning-text: #fbd38d;
+        --warning-border: #5c4718;
+        --canvas-bg: #070c17;
+        --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+        color-scheme: dark;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #0b1120;
+      --surface: #121a2b;
+      --surface-2: #182236;
+      --border: #24304a;
+      --text: #e5ebf5;
+      --muted: #94a0b8;
+      --primary: #3b82f6;
+      --primary-hover: #60a5fa;
+      --primary-soft: #1b2b4d;
+      --upload: #a78bfa;
+      --danger: #ef4444;
+      --danger-hover: #f87171;
+      --success: #22c55e;
+      --warning-bg: #2a2110;
+      --warning-text: #fbd38d;
+      --warning-border: #5c4718;
+      --canvas-bg: #070c17;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+      color-scheme: dark;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
+    *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html { -webkit-text-size-adjust: 100%; }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      padding: 2rem;
-      line-height: 1.6;
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      padding: 32px 16px 48px;
     }
+    .wrap { max-width: 1180px; margin: 0 auto; }
 
+    /* ---------- En-tête ---------- */
     header {
-      text-align: center;
-      margin-bottom: 3rem;
-      animation: fadeIn 0.8s ease-out;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      flex-wrap: wrap; margin-bottom: 28px;
     }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand svg { width: 48px; height: 48px; flex: none; }
+    h1 { font-size: clamp(1.4rem, 3vw, 1.9rem); margin: 0; letter-spacing: -.02em; }
+    .subtitle { margin: 2px 0 0; color: var(--muted); font-size: .95rem; }
+    .header-actions { display: flex; gap: 8px; }
 
-    .logo-container { display: inline-flex; align-items: center; gap: 15px; }
-
-    #logo {
-      width: 60px; height: 60px; border-radius: 50%;
-      background-color: var(--primary);
-      box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-      transition: transform 0.3s ease;
+    /* ---------- Grille & cartes ---------- */
+    .grid {
+      display: grid; gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
     }
-    #logo:hover { transform: scale(1.1) rotate(5deg); }
-
-    h1 { font-size: 2.2rem; text-transform: uppercase; letter-spacing: 1px; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 2rem; max-width: 1200px; margin: 0 auto;
-    }
-
     .card {
-      background-color: var(--card-bg); border-radius: 12px;
-      padding: 2rem; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-      transition: transform 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 22px; display: flex; flex-direction: column; gap: 16px;
+      min-width: 0;
     }
-    .card:hover { transform: translateY(-5px); }
+    .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    h2 { font-size: 1.15rem; margin: 0; letter-spacing: -.01em; }
+    .card-desc { color: var(--muted); font-size: .9rem; margin: 2px 0 0; }
+    .badge {
+      font-size: .72rem; font-weight: 600; padding: 3px 9px; border-radius: 999px;
+      background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); white-space: nowrap;
+    }
+    .badge.live { background: var(--primary-soft); color: var(--primary); border-color: transparent; }
+    .badge.ok { color: var(--success); }
 
-    h2 {
-      font-size: 1.4rem; margin-bottom: 1rem;
-      border-bottom: 2px solid var(--bg-color); padding-bottom: 0.5rem;
+    .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .stat {
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; min-width: 0;
     }
+    .stat span { display: block; font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
+    .stat strong { font-size: 1.15rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .stat small { color: var(--muted); font-weight: 500; font-size: .8rem; }
+    .stat.down strong { color: var(--primary); }
+    .stat.up strong { color: var(--upload); }
 
-    p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem; }
-    .metric { font-weight: bold; color: var(--primary); }
-    .warning { color: var(--danger); font-weight: 600; font-size: 0.85rem; margin-top: 10px; min-height: 40px; }
-
-    /* --- UI COMPTEUR RÉSEAU Double Aiguille --- */
-    .speedometer-container {
-      position: relative;
-      width: 200px;
-      height: 120px;
-      margin: 0 auto 1rem auto;
-      overflow: hidden;
-    }
-    .gauge-bg { fill: none; stroke: #e9ecef; stroke-width: 15; stroke-linecap: round; }
-    
-    /* Aiguille Réception (Bleue) */
-    .needle-down {
-      position: absolute;
-      bottom: 10px; left: 50%;
-      width: 4px; height: 80px;
-      background: var(--primary);
-      transform-origin: bottom center;
-      transform: translateX(-50%) rotate(-90deg);
-      transition: transform 0.2s linear; /* Plus réactif pour mesure continue */
-      z-index: 3;
-      border-radius: 2px 2px 0 0;
-    }
-
-    /* Aiguille Envoi (Rouge) */
-    .needle-up {
-      position: absolute;
-      bottom: 10px; left: 50%;
-      width: 3px; height: 70px; /* Légèrement plus courte */
-      background: var(--danger);
-      transform-origin: bottom center;
-      transform: translateX(-50%) rotate(-90deg);
-      transition: transform 0.2s linear;
-      z-index: 2;
-      border-radius: 2px 2px 0 0;
-      opacity: 0.8;
-    }
-    
-    /* Point central */
-    .gauge-center {
-        position: absolute;
-        bottom: 0px; left: 50%;
-        width: 12px; height: 12px;
-        background: var(--text-main);
-        border-radius: 50%;
-        transform: translate(-50%, 50%);
-        z-index: 4;
-    }
-
-    .network-dashboard {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;
-    }
-    .net-box {
-      background: #f8f9fa; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #e9ecef;
-    }
-    .net-box span { display: block; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
-    .net-box strong { font-size: 1.1rem; color: var(--text-main); }
-    
-    /* Couleurs spécifiques aux box */
-    .box-down strong { color: var(--primary); }
-    .box-up strong { color: var(--danger); }
-
-    /* --- Controls d'origine --- */
-    .control-group { margin-bottom: 1.5rem; }
-    .control-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; font-weight: 500;
-    }
+    /* ---------- Contrôles ---------- */
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-weight: 500; font-size: .95rem; }
+    .value { font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums; }
 
     input[type=range] {
-      width: 100%; height: 6px; background: #e0e6ed; border-radius: 3px; outline: none; -webkit-appearance: none; appearance: none;
+      -webkit-appearance: none; appearance: none; width: 100%; height: 28px; background: transparent; cursor: pointer; margin: 0;
     }
+    input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: var(--border); }
+    input[type=range]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--border); }
     input[type=range]::-webkit-slider-thumb {
-      -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
-      background: var(--primary); cursor: pointer; transition: background 0.1s;
+      -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; margin-top: -7px;
+      background: var(--primary); border: 3px solid var(--surface); box-shadow: 0 1px 4px rgba(0,0,0,.25);
     }
-    input[type=range]::-webkit-slider-thumb:hover { background: var(--primary-hover); }
-
-    .input-number {
-      width: 80px; padding: 5px; border: 1px solid #bdc3c7; border-radius: 4px;
-      font-size: 1rem; text-align: center; color: var(--primary); font-weight: bold;
+    input[type=range]::-moz-range-thumb {
+      width: 16px; height: 16px; border-radius: 50%; background: var(--primary);
+      border: 3px solid var(--surface); box-shadow: 0 1px 4px rgba(0,0,0,.25);
     }
+    input[type=range]:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
+    input[type=range]:disabled { opacity: .5; cursor: not-allowed; }
 
-    #circle {
-      width: 80px; height: 80px; margin: 1.5rem auto; border-radius: 50%;
-      background-color: #ecf0f1; box-shadow: 0 0 10px rgba(0,0,0,0.1) inset;
-      transition: background-color 0.01s linear;
+    .num {
+      width: 104px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2);
+      color: var(--primary); font: inherit; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums;
     }
+    .num:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
 
-    canvas {
-      width: 100%; height: 80px; background-color: #2c3e50; border-radius: 8px; margin-top: 1rem; display: block;
+    .segmented { display: flex; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 3px; gap: 2px; }
+    .segmented label { flex: 1; }
+    .segmented input { position: absolute; opacity: 0; pointer-events: none; }
+    .segmented span {
+      display: block; text-align: center; padding: 6px 4px; border-radius: 7px; font-size: .85rem; font-weight: 600;
+      color: var(--muted); cursor: pointer; user-select: none;
     }
+    .segmented input:checked + span { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+    .segmented input:focus-visible + span { outline: 2px solid var(--primary); }
 
-    .buttons { display: flex; gap: 10px; margin-top: 1.5rem; }
-    button {
-      flex: 1; padding: 0.8rem; border: none; border-radius: 6px;
-      font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.2s ease; color: white;
+    .row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .row > .btn { flex: 1 1 140px; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px 16px; border-radius: 10px; border: 1px solid transparent;
+      font: inherit; font-weight: 600; font-size: .95rem; cursor: pointer;
+      transition: background-color .15s, border-color .15s, color .15s, transform .05s;
+      background: var(--primary); color: #fff;
     }
-    .btn-play { background-color: var(--primary); }
-    .btn-play:hover { background-color: var(--primary-hover); }
-    .btn-stop { background-color: var(--danger); }
-    .btn-stop:hover { background-color: var(--danger-hover); }
-    
-    .reset-container { text-align: center; margin-top: 3rem; }
-    .btn-reset { background-color: #95a5a6; max-width: 200px; }
-    .btn-reset:hover { background-color: #7f8c8d; }
+    .btn:hover { background: var(--primary-hover); }
+    .btn:active { transform: translateY(1px); }
+    .btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .btn.danger { background: var(--danger); }
+    .btn.danger:hover { background: var(--danger-hover); }
+    .btn.ghost { background: var(--surface); color: var(--text); border-color: var(--border); }
+    .btn.ghost:hover { background: var(--surface-2); }
+    .btn.small { padding: 7px 12px; font-size: .85rem; }
 
-    @media (max-width: 600px) { body { padding: 1rem; } h1 { font-size: 1.5rem; } }
+    .note { font-size: .82rem; color: var(--muted); margin: 0; }
+    .alert {
+      font-size: .85rem; border-radius: 10px; padding: 10px 12px; margin: 0;
+      background: var(--warning-bg); color: var(--warning-text); border: 1px solid var(--warning-border);
+    }
+    .alert[hidden] { display: none; }
+    .result {
+      border-radius: 12px; padding: 12px 14px; background: var(--primary-soft); color: var(--text); font-size: .92rem; margin: 0;
+    }
+    .result[hidden] { display: none; }
+    .result strong { color: var(--primary); }
+
+    /* ---------- Jauge réseau ---------- */
+    .gauge { width: 100%; max-width: 300px; margin: 0 auto; display: block; }
+    .gauge .track { fill: none; stroke: var(--border); stroke-width: 14; stroke-linecap: round; }
+    .gauge .fill { fill: none; stroke: var(--primary); stroke-width: 14; stroke-linecap: round; transition: stroke .3s; }
+    .gauge .tick { fill: var(--muted); font-size: 11px; font-weight: 600; text-anchor: middle; dominant-baseline: middle; }
+    .gauge .needle { stroke: var(--text); stroke-width: 4; stroke-linecap: round; }
+    .gauge .hub { fill: var(--text); }
+    .gauge .big { fill: var(--text); font-size: 34px; font-weight: 800; text-anchor: middle; font-variant-numeric: tabular-nums; }
+    .gauge .unit { fill: var(--muted); font-size: 13px; font-weight: 600; text-anchor: middle; }
+    .gauge.upload .fill { stroke: var(--upload); }
+
+    .progress { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .progress > div { height: 100%; width: 0; background: var(--primary); transition: width .2s linear; }
+
+    /* ---------- Vision ---------- */
+    .flicker-stage {
+      display: grid; place-items: center; height: 170px; border-radius: 12px;
+      background: var(--surface-2); border: 1px solid var(--border);
+    }
+    #flickerDot { width: 110px; height: 110px; border-radius: 50%; background: #808080; }
+
+    /* ---------- Audio ---------- */
+    canvas { width: 100%; height: 96px; display: block; border-radius: 12px; background: var(--canvas-bg); }
+    .freq-meta { display: flex; justify-content: space-between; gap: 8px; font-size: .82rem; color: var(--muted); flex-wrap: wrap; }
+
+    /* ---------- Résultats ---------- */
+    .summary { margin-top: 20px; }
+    .summary-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); }
+
+    /* ---------- Modale ---------- */
+    dialog {
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; max-width: 460px; width: calc(100% - 32px);
+      background: var(--surface); color: var(--text); box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    }
+    dialog::backdrop { background: rgba(2, 6, 23, .6); }
+    dialog h3 { margin: 0 0 8px; }
+    dialog p { color: var(--muted); margin: 0 0 16px; font-size: .92rem; }
+
+    .toast {
+      position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); opacity: 0;
+      background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: .9rem; font-weight: 600;
+      transition: opacity .2s, transform .2s; pointer-events: none; z-index: 10; max-width: calc(100% - 32px);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    footer { text-align: center; color: var(--muted); font-size: .82rem; margin-top: 32px; }
+    footer a { color: inherit; }
+
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
   </style>
 </head>
 <body>
+<div class="wrap">
 
   <header>
-    <div class="logo-container">
-      <img src="Human_Perception_Test.png" alt="Logo" id="logo" onerror="this.style.display='none'">
-      <h1>Test de Perception</h1>
-    </div>
-  </header>  
-
-  <div class="container">
-    
-    <div class="card">
+    <div class="brand">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="16" fill="#2563eb" />
+        <path d="M8 32h8l5-14 8 28 7-22 5 12 4-4h11" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
       <div>
-        <h2>Diagnostic Réseau Continu</h2>
-        
-        <div class="speedometer-container">
-          <svg viewBox="0 0 200 120">
-            <path class="gauge-bg" d="M30,100 A70,70 0 0,1 170,100" />
-            </svg>
-          <div id="needleDown" class="needle-down" title="Réception"></div>
-          <div id="needleUp" class="needle-up" title="Envoi"></div>
-          <div class="gauge-center"></div>
-        </div>
+        <h1>Test de Perception Humaine</h1>
+        <p class="subtitle">Audition, vision, écran et réseau — directement dans votre navigateur.</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn ghost small" id="themeBtn" type="button" aria-label="Changer de thème">🌓 Thème</button>
+      <button class="btn ghost small" id="resetBtn" type="button">↺ Tout réinitialiser</button>
+    </div>
+  </header>
 
-        <div class="network-dashboard">
-          <div class="net-box">
-            <span>Ping</span>
-            <strong id="networkPing">-- ms</strong>
-          </div>
-          <div class="net-box">
-            <span>Écran</span>
-            <strong id="screenHz">-- Hz</strong>
-          </div>
-          <div class="net-box box-down">
-            <span>⬇ Réception</span>
-            <strong id="netDown">-- Mb/s</strong>
-          </div>
-          <div class="net-box box-up">
-            <span>⬆ Envoi</span>
-            <strong id="netUp">-- Mb/s</strong>
-          </div>
+  <main class="grid">
+
+    <!-- ================= AUDITION ================= -->
+    <section class="card" aria-labelledby="audioTitle">
+      <div class="card-head">
+        <div>
+          <h2 id="audioTitle">Perception auditive</h2>
+          <p class="card-desc">Générateur de son et test des limites de votre audition.</p>
+        </div>
+        <span class="badge" id="audioBadge">Arrêté</span>
+      </div>
+
+      <p class="alert">🎧 Commencez avec un volume bas. Un casque donne des résultats bien plus fiables que des haut-parleurs.</p>
+
+      <div class="field">
+        <div class="field-head">
+          <label for="freqInput">Fréquence</label>
+          <span><input type="number" id="freqInput" class="num" min="20" max="22000" step="1" value="440" inputmode="numeric"> Hz</span>
+        </div>
+        <input type="range" id="freqSlider" min="0" max="1000" step="1" aria-label="Fréquence (échelle logarithmique)">
+        <div class="freq-meta">
+          <span id="freqCategory">—</span>
+          <span id="freqNote">—</span>
         </div>
       </div>
-      <p style="font-size: 0.7rem; margin-top: 15px; text-align:center; color: var(--text-main)">
-        <span style="color: var(--primary)">●</span> Réception | <span style="color: var(--danger)">●</span> Envoi (Mesure en boucle)
-      </p>
-    </div>
 
-    <div class="card">
+      <div class="field">
+        <div class="field-head">
+          <label for="volumeSlider">Volume</label>
+          <span class="value" id="volumeValue">25 %</span>
+        </div>
+        <input type="range" id="volumeSlider" min="0" max="100" step="1" value="25">
+      </div>
+
+      <div class="field">
+        <span class="field-head">Forme d'onde</span>
+        <div class="segmented" role="radiogroup" aria-label="Forme d'onde">
+          <label><input type="radio" name="wave" value="sine" checked><span>Sinus</span></label>
+          <label><input type="radio" name="wave" value="triangle"><span>Triangle</span></label>
+          <label><input type="radio" name="wave" value="square"><span>Carré</span></label>
+          <label><input type="radio" name="wave" value="sawtooth"><span>Scie</span></label>
+        </div>
+      </div>
+
+      <canvas id="waveCanvas" aria-label="Visualisation de l'onde sonore" role="img"></canvas>
+
+      <div class="row">
+        <button class="btn" id="playBtn" type="button">▶ Jouer</button>
+        <button class="btn danger" id="stopBtn" type="button" disabled>■ Stop</button>
+      </div>
+
+      <div class="field">
+        <span class="field-head">Test automatique de vos limites</span>
+        <div class="row">
+          <button class="btn ghost" id="highTestBtn" type="button">Limite aiguë ↑</button>
+          <button class="btn ghost" id="lowTestBtn" type="button">Limite grave ↓</button>
+        </div>
+        <button class="btn" id="hearStopBtn" type="button" hidden>Je n'entends plus le son</button>
+        <p class="result" id="hearResult" hidden></p>
+      </div>
+    </section>
+
+    <!-- ================= VISION ================= -->
+    <section class="card" aria-labelledby="visionTitle">
+      <div class="card-head">
+        <div>
+          <h2 id="visionTitle">Perception visuelle</h2>
+          <p class="card-desc">À partir de quelle fréquence un clignotement vous paraît-il fixe&nbsp;?</p>
+        </div>
+        <span class="badge" id="visionBadge">Arrêté</span>
+      </div>
+
+      <div class="flicker-stage"><div id="flickerDot" aria-hidden="true"></div></div>
+
+      <div class="field">
+        <div class="field-head">
+          <label for="flickerSlider">Fréquence de clignotement</label>
+          <span class="value"><span id="flickerValue">5</span> Hz</span>
+        </div>
+        <input type="range" id="flickerSlider" min="1" max="30" step="1" value="5">
+        <p class="note">Maximum affichable sur votre écran : <strong id="flickerMax">30</strong> Hz (la moitié de sa fréquence de rafraîchissement).</p>
+      </div>
+
+      <div class="field">
+        <span class="field-head">Contraste</span>
+        <div class="segmented" role="radiogroup" aria-label="Contraste">
+          <label><input type="radio" name="contrast" value="soft" checked><span>Doux</span></label>
+          <label><input type="radio" name="contrast" value="strong"><span>Fort</span></label>
+        </div>
+      </div>
+
+      <div class="row">
+        <button class="btn" id="flickerBtn" type="button">▶ Démarrer</button>
+        <button class="btn ghost" id="flickerAutoBtn" type="button">Test automatique</button>
+      </div>
+      <button class="btn" id="flickerStopBtn" type="button" hidden>Ça ne clignote plus</button>
+      <p class="alert" id="visionWarn" hidden></p>
+      <p class="result" id="visionResult" hidden></p>
+    </section>
+
+    <!-- ================= ÉCRAN ================= -->
+    <section class="card" aria-labelledby="screenTitle">
+      <div class="card-head">
+        <div>
+          <h2 id="screenTitle">Écran</h2>
+          <p class="card-desc">Fréquence de rafraîchissement et caractéristiques d'affichage.</p>
+        </div>
+        <span class="badge" id="screenBadge">Mesure…</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>Rafraîchissement</span><strong id="screenHz">--</strong> <small>Hz</small></div>
+        <div class="stat"><span>Temps par image</span><strong id="frameMs">--</strong> <small>ms</small></div>
+        <div class="stat"><span>Définition</span><strong id="screenRes">--</strong></div>
+        <div class="stat"><span>Densité de pixels</span><strong id="screenDpr">--</strong></div>
+      </div>
+      <p class="note">La mesure utilise le rythme d'affichage réel du navigateur. Laissez l'onglet au premier plan pendant la mesure.</p>
+      <button class="btn ghost" id="screenBtn" type="button">↻ Mesurer à nouveau</button>
+    </section>
+
+    <!-- ================= RÉSEAU ================= -->
+    <section class="card" aria-labelledby="netTitle">
+      <div class="card-head">
+        <div>
+          <h2 id="netTitle">Diagnostic réseau</h2>
+          <p class="card-desc">Latence, débit descendant et montant.</p>
+        </div>
+        <span class="badge" id="netBadge">Prêt</span>
+      </div>
+
+      <svg class="gauge" id="gauge" viewBox="0 0 300 240" role="img" aria-label="Compteur de débit">
+        <path class="track" id="gaugeTrack" />
+        <path class="fill" id="gaugeFill" pathLength="1000" stroke-dasharray="0 1000" />
+        <g id="gaugeTicks"></g>
+        <line class="needle" id="gaugeNeedle" x1="150" y1="150" x2="150" y2="62" />
+        <circle class="hub" cx="150" cy="150" r="8" />
+        <text class="big" id="gaugeValue" x="150" y="205">0</text>
+        <text class="unit" id="gaugeUnit" x="150" y="226">Mb/s</text>
+      </svg>
+      <div class="progress" aria-hidden="true"><div id="netProgress"></div></div>
+
+      <div class="stats">
+        <div class="stat"><span>Latence</span><strong id="netPing">--</strong> <small>ms</small></div>
+        <div class="stat"><span>Gigue</span><strong id="netJitter">--</strong> <small>ms</small></div>
+        <div class="stat down"><span>⬇ Réception</span><strong id="netDown">--</strong> <small>Mb/s</small></div>
+        <div class="stat up"><span>⬆ Envoi</span><strong id="netUp">--</strong> <small>Mb/s</small></div>
+      </div>
+
+      <p class="alert" id="netError" hidden></p>
+      <div class="row">
+        <button class="btn" id="netBtn" type="button">▶ Lancer le test</button>
+      </div>
+      <p class="note">Serveurs de test&nbsp;: Cloudflare (speed.cloudflare.com). Le test consomme environ 50 à 300&nbsp;Mo selon votre débit.</p>
+    </section>
+
+  </main>
+
+  <!-- ================= RÉSUMÉ ================= -->
+  <section class="card summary" aria-labelledby="sumTitle">
+    <div class="card-head">
       <div>
-        <h2>Perception Visuelle</h2>
-        <p>Fréquence limite calculée : <strong id="maxBlinkHzUI">--</strong> Hz.</p>
-        <div id="circle"></div>
+        <h2 id="sumTitle">Vos résultats</h2>
+        <p class="card-desc">Enregistrés sur cet appareil uniquement.</p>
       </div>
-      
-      <div class="control-group">
-        <div class="control-header">
-          <label for="fpsSlider">Fréquence de clignotement</label>
-          <span class="metric"><span id="fpsValue">1</span> Hz</span>
-        </div>
-        <input type="range" min="1" max="60" value="1" step="1" id="fpsSlider">
-        <div id="visualLimitMsg" class="warning"></div>
-      </div>
+      <button class="btn ghost small" id="shareBtn" type="button">⧉ Copier / partager</button>
     </div>
-
-    <div class="card">
-      <div>
-        <h2>Perception Auditive</h2>
-        <div class="control-group">
-          <div class="control-header">
-            <label for="freqInput">Fréquence sonore (Hz)</label>
-            <input type="number" id="freqInput" class="input-number" min="1" max="25000" value="440">
-          </div>
-          <input type="range" min="0" max="1000" value="608" step="1" id="freqSliderLog">
-        </div>
-
-        <div class="control-group">
-          <div class="control-header">
-            <label for="volumeSlider">Volume</label>
-            <span class="metric" id="volumeValue">50%</span>
-          </div>
-          <input type="range" min="0" max="100" value="50" step="1" id="volumeSlider">
-        </div>
-
-        <div class="control-group">
-          <span>Audibilité humaine :</span>
-          <span class="metric" id="audibilityPercentage">100%</span>
-        </div>
-
-        <canvas id="waveVisual"></canvas>
-      </div>
-
-      <div class="buttons">
-        <button class="btn-play" id="btnPlay">Jouer</button>
-        <button class="btn-stop" id="btnStop">Stop</button>
-      </div>
+    <div class="summary-grid">
+      <div class="stat"><span>Limite aiguë</span><strong id="sumHigh">--</strong></div>
+      <div class="stat"><span>Limite grave</span><strong id="sumLow">--</strong></div>
+      <div class="stat"><span>Fusion du clignotement</span><strong id="sumFlicker">--</strong></div>
+      <div class="stat"><span>Écran</span><strong id="sumScreen">--</strong></div>
+      <div class="stat"><span>Réception / Envoi</span><strong id="sumNet">--</strong></div>
+      <div class="stat"><span>Latence</span><strong id="sumPing">--</strong></div>
     </div>
+  </section>
 
-  </div>
+  <footer>
+    Résultats indicatifs, sans valeur médicale. · <a href="https://github.com/zuulaxx/Test-de-Perception-Humaine">Code source</a> · Échap = tout arrêter
+  </footer>
+</div>
 
-  <div class="reset-container">
-    <button class="btn-reset" onclick="resetAll()">Tout réinitialiser</button>
-  </div>
+<dialog id="seizureDialog">
+  <h3>⚠️ Avertissement photosensibilité</h3>
+  <p>Ce test affiche des clignotements rapides. Ils peuvent déclencher des crises chez les personnes atteintes d'épilepsie photosensible. Si vous êtes concerné(e), ou si vous ressentez une gêne, n'effectuez pas ce test.</p>
+  <form method="dialog" class="row">
+    <button class="btn ghost" value="cancel">Annuler</button>
+    <button class="btn" value="ok">J'ai compris, continuer</button>
+  </form>
+</dialog>
 
-  <script>
-/* =========================================
-   1. RÉSEAU : LOGIQUE FLUIDE (ANTI-BUG)
-   ========================================= */
-const needleDown = document.getElementById('needleDown');
-const needleUp = document.getElementById('needleUp');
-const GAUGE_MAX_SPEED = 2500; 
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-// Stockage des vitesses pour lissage
-let currentDown = 0;
-let currentUp = 0;
+<script>
+"use strict";
 
-function updateNeedles() {
-  const angleDown = (Math.min(currentDown, GAUGE_MAX_SPEED) / GAUGE_MAX_SPEED) * 180 - 90;
-  const angleUp = (Math.min(currentUp, GAUGE_MAX_SPEED) / GAUGE_MAX_SPEED) * 180 - 90;
-  
-  needleDown.style.transform = `translateX(-50%) rotate(${angleDown}deg)`;
-  needleUp.style.transform = `translateX(-50%) rotate(${angleUp}deg)`;
-  
-  document.getElementById("netDown").innerText = currentDown.toFixed(1) + " Mb/s";
-  document.getElementById("netUp").innerText = currentUp.toFixed(1) + " Mb/s";
+/* =========================================================
+   Utilitaires
+   ========================================================= */
+const $ = (id) => document.getElementById(id);
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+const median = (arr) => {
+  if (!arr.length) return NaN;
+  const s = [...arr].sort((a, b) => a - b);
+  const m = s.length >> 1;
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+};
+const fmt = (n, d = 0) => Number.isFinite(n)
+  ? n.toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d })
+  : "--";
+const fmtSpeed = (mbps) => !Number.isFinite(mbps) ? "--" : fmt(mbps, mbps < 10 ? 2 : mbps < 100 ? 1 : 0);
+const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+let toastTimer;
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
 }
 
-async function runNetworkDiagnostics() {
-  // --- TEST PING ---
-  const pStart = performance.now();
-  try {
-    await fetch(window.location.href, { method: 'HEAD', cache: 'no-store' });
-    document.getElementById("networkPing").innerText = Math.round(performance.now() - pStart) + " ms";
-  } catch(e) {}
-
-  // --- TEST DOWNLOAD (RÉCEPTION) ---
-  // On télécharge un petit fragment pour mesurer la vitesse instantanée
-  const dStart = performance.now();
-  try {
-    const res = await fetch(window.location.href + '?cb=' + dStart);
-    const blob = await res.blob();
-    const duration = (performance.now() - dStart) / 1000;
-    // Si ta connexion est trop rapide pour le petit fichier, on simule la montée en charge
-    let speed = ((blob.size * 8) / (1024 * 1024)) / duration;
-    
-    // Pour que ça paraisse "réel" sur du 2Gb/s (car le serveur limite souvent)
-    // On multiplie par un facteur de boost si on détecte une fibre puissante
-    currentDown = speed > 100 ? speed * 1.5 : speed; 
-  } catch(e) { currentDown = 0; }
-
-  // --- TEST UPLOAD (ENVOI) ---
-  const uStart = performance.now();
-  const dummySize = 2 * 1024 * 1024; // 2Mo pour rester fluide
-  try {
-    await fetch(window.location.href, { method: 'POST', body: new Uint8Array(dummySize), cache: 'no-store' });
-    const duration = (performance.now() - uStart) / 1000;
-    currentUp = ((dummySize * 8) / (1024 * 1024)) / duration;
-  } catch(e) { currentUp = 0; }
-
-  updateNeedles();
-  
-  // Relance immédiate
-  setTimeout(runNetworkDiagnostics, 100); 
+function setBadge(el, text, state = "") {
+  el.textContent = text;
+  el.className = "badge" + (state ? " " + state : "");
 }
 
-runNetworkDiagnostics();
+/* ---------- Stockage local (tolérant aux erreurs) ---------- */
+const STORE_KEY = "tph-results-v2";
+const results = (() => {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch { return {}; }
+})();
+function saveResult(key, value) {
+  if (value === undefined) delete results[key]; else results[key] = value;
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(results)); } catch { /* stockage indisponible */ }
+  renderSummary();
+}
 
-/* Garde le reste de ton code (Vision, Audio, Refresh Rate) ici... */
-    /* =========================================
-       2. REFRESH RATE (Code d'origine gardé)
-       ========================================= */
-    let frameTimes = [];
-    let currentScreenHz = 60; 
-    function detectSystemMetrics() {
+/* ---------- Thème ---------- */
+const THEME_KEY = "tph-theme";
+function applyTheme(theme) {
+  if (theme) document.documentElement.dataset.theme = theme;
+  else delete document.documentElement.dataset.theme;
+}
+try { applyTheme(localStorage.getItem(THEME_KEY)); } catch {}
+$("themeBtn").addEventListener("click", () => {
+  const current = document.documentElement.dataset.theme
+    || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const next = current === "dark" ? "light" : "dark";
+  applyTheme(next);
+  try { localStorage.setItem(THEME_KEY, next); } catch {}
+  drawWave(); // couleurs du canvas
+});
+
+/* =========================================================
+   1. AUDITION
+   ========================================================= */
+const audio = {
+  ctx: null, master: null, analyser: null,
+  voice: null,          // { osc, env }
+  sweep: null,          // { type, from, to, start, duration, timer }
+  raf: 0,
+};
+const MIN_F = 20, MAX_F = 20000;
+const WAVE_GAIN = { sine: 1, triangle: 0.9, square: 0.3, sawtooth: 0.35 };
+
+const freqInput = $("freqInput");
+const freqSlider = $("freqSlider");
+const volumeSlider = $("volumeSlider");
+const canvas = $("waveCanvas");
+const c2d = canvas.getContext("2d");
+
+let currentFreq = 440;
+let waveType = "sine";
+
+function nyquist() { return audio.ctx ? audio.ctx.sampleRate / 2 : 22050; }
+function sliderToFreq(v) { return MIN_F * Math.pow(MAX_F / MIN_F, v / 1000); }
+function freqToSlider(f) { return Math.round(1000 * Math.log(clamp(f, MIN_F, MAX_F) / MIN_F) / Math.log(MAX_F / MIN_F)); }
+// Courbe perceptive : le volume ressenti est logarithmique
+function volumeToGain(v) { return Math.pow(v / 100, 2) * 0.6; }
+
+const NOTE_NAMES = ["Do", "Do♯", "Ré", "Ré♯", "Mi", "Fa", "Fa♯", "Sol", "Sol♯", "La", "La♯", "Si"];
+function noteName(f) {
+  const n = 12 * Math.log2(f / 440) + 69;
+  const r = Math.round(n);
+  const cents = Math.round((n - r) * 100);
+  const octave = Math.floor(r / 12) - 1;
+  const name = NOTE_NAMES[((r % 12) + 12) % 12];
+  return `${name}${octave}${cents ? ` (${cents > 0 ? "+" : ""}${cents} ct)` : ""}`;
+}
+function freqCategory(f) {
+  if (f < 20) return "Infrason — inaudible";
+  if (f < 250) return "Grave";
+  if (f < 2000) return "Médium";
+  if (f < 8000) return "Aigu — zone la plus sensible de l'oreille";
+  if (f < 12000) return "Très aigu";
+  if (f < 16000) return "Extrême aigu — moins audible avec l'âge";
+  if (f <= 20000) return "Limite humaine — souvent inaudible après 25 ans";
+  return "Ultrason — inaudible pour l'humain";
+}
+
+function updateFreqUI(f, { fromSlider = false, fromInput = false } = {}) {
+  currentFreq = f;
+  if (!fromInput) freqInput.value = Math.round(f);
+  if (!fromSlider) freqSlider.value = freqToSlider(f);
+  $("freqCategory").textContent = freqCategory(f);
+  $("freqNote").textContent = noteName(f);
+}
+
+function setFrequency(f, opts) {
+  f = clamp(f, 1, nyquist() - 1);
+  updateFreqUI(f, opts);
+  if (audio.voice && !audio.sweep) {
+    audio.voice.osc.frequency.setTargetAtTime(f, audio.ctx.currentTime, 0.02);
+  }
+}
+
+function ensureAudio() {
+  if (!audio.ctx) {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) { toast("Votre navigateur ne prend pas en charge Web Audio."); return false; }
+    audio.ctx = new Ctx();
+    audio.master = audio.ctx.createGain();
+    audio.master.gain.value = volumeToGain(+volumeSlider.value);
+    audio.analyser = audio.ctx.createAnalyser();
+    audio.analyser.fftSize = 8192;
+    audio.master.connect(audio.analyser);
+    audio.analyser.connect(audio.ctx.destination);
+    freqInput.max = Math.floor(nyquist() - 1);
+  }
+  if (audio.ctx.state === "suspended") audio.ctx.resume();
+  return true;
+}
+
+function startTone(freq = currentFreq) {
+  if (!ensureAudio()) return false;
+  stopTone(true);
+  const now = audio.ctx.currentTime;
+  const osc = audio.ctx.createOscillator();
+  const env = audio.ctx.createGain();
+  osc.type = waveType;
+  osc.frequency.setValueAtTime(freq, now);
+  env.gain.setValueAtTime(0, now);
+  env.gain.linearRampToValueAtTime(WAVE_GAIN[waveType], now + 0.04); // fondu anti-clic
+  osc.connect(env).connect(audio.master);
+  osc.start(now);
+  audio.voice = { osc, env };
+  $("playBtn").disabled = true;
+  $("stopBtn").disabled = false;
+  setBadge($("audioBadge"), "En lecture", "live");
+  if (!audio.raf) audio.raf = requestAnimationFrame(waveLoop);
+  return true;
+}
+
+function stopTone(immediate = false) {
+  const v = audio.voice;
+  if (v) {
+    const now = audio.ctx.currentTime;
+    v.env.gain.cancelScheduledValues(now);
+    v.env.gain.setValueAtTime(v.env.gain.value, now);
+    v.env.gain.linearRampToValueAtTime(0, now + (immediate ? 0.01 : 0.05));
+    v.osc.stop(now + 0.08);
+    v.osc.onended = () => { v.osc.disconnect(); v.env.disconnect(); };
+    audio.voice = null;
+  }
+  if (immediate) return;
+  endSweep(false);
+  $("playBtn").disabled = false;
+  $("stopBtn").disabled = true;
+  setBadge($("audioBadge"), "Arrêté");
+  cancelAnimationFrame(audio.raf);
+  audio.raf = 0;
+  setTimeout(drawWave, 100);
+}
+
+/* ---------- Visualisation ---------- */
+function resizeCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  const w = Math.round(canvas.clientWidth * dpr);
+  const h = Math.round(canvas.clientHeight * dpr);
+  if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+}
+let waveBuf = null;
+function drawWave() {
+  resizeCanvas();
+  const { width: w, height: h } = canvas;
+  c2d.fillStyle = cssVar("--canvas-bg") || "#0f172a";
+  c2d.fillRect(0, 0, w, h);
+  // ligne médiane
+  c2d.strokeStyle = "rgba(148,163,184,.18)";
+  c2d.lineWidth = 1;
+  c2d.beginPath(); c2d.moveTo(0, h / 2); c2d.lineTo(w, h / 2); c2d.stroke();
+
+  c2d.lineWidth = 2 * (window.devicePixelRatio || 1);
+  c2d.strokeStyle = cssVar("--wave") || "#60a5fa";
+  c2d.beginPath();
+  if (audio.analyser && audio.voice) {
+    if (!waveBuf || waveBuf.length !== audio.analyser.fftSize) waveBuf = new Float32Array(audio.analyser.fftSize);
+    audio.analyser.getFloatTimeDomainData(waveBuf);
+    // Synchronisation sur un passage par zéro montant pour une image stable
+    let start = 0;
+    for (let i = 1; i < waveBuf.length / 2; i++) {
+      if (waveBuf[i - 1] < 0 && waveBuf[i] >= 0) { start = i; break; }
+    }
+    // Zoom automatique : environ 4 périodes visibles, quelle que soit la fréquence
+    const len = clamp(Math.round(4 * audio.ctx.sampleRate / currentFreq), 32, waveBuf.length / 2);
+    let peak = 0.05;
+    for (let i = 0; i < waveBuf.length; i++) peak = Math.max(peak, Math.abs(waveBuf[i]));
+    for (let i = 0; i < len; i++) {
+      const x = (i / (len - 1)) * w;
+      const y = h / 2 - (waveBuf[start + i] / peak) * (h * 0.42);
+      i ? c2d.lineTo(x, y) : c2d.moveTo(x, y);
+    }
+  } else {
+    c2d.moveTo(0, h / 2); c2d.lineTo(w, h / 2);
+  }
+  c2d.stroke();
+}
+function waveLoop() {
+  drawWave();
+  if (audio.sweep) {
+    const f = sweepCurrentFreq();
+    updateFreqUI(f);
+  }
+  audio.raf = audio.voice ? requestAnimationFrame(waveLoop) : 0;
+}
+new ResizeObserver(drawWave).observe(canvas);
+
+/* ---------- Test automatique des limites ---------- */
+function sweepCurrentFreq() {
+  const s = audio.sweep;
+  const t = clamp((audio.ctx.currentTime - s.start) / s.duration, 0, 1);
+  return s.from * Math.pow(s.to / s.from, t);
+}
+
+function startSweep(type) {
+  const high = type === "high";
+  const from = high ? 8000 : 250;
+  const to = high ? Math.min(22000, nyquist() - 50) : 20;
+  const duration = high ? 40 : 25;
+  if (!startTone(from)) return;
+  const osc = audio.voice.osc;
+  const now = audio.ctx.currentTime;
+  osc.frequency.cancelScheduledValues(now);
+  osc.frequency.setValueAtTime(from, now);
+  osc.frequency.exponentialRampToValueAtTime(to, now + duration);
+  audio.sweep = { type, from, to, start: now, duration };
+  audio.sweep.timer = setTimeout(() => finishSweep(true), duration * 1000 + 200);
+
+  $("highTestBtn").disabled = $("lowTestBtn").disabled = true;
+  freqSlider.disabled = freqInput.disabled = true;
+  $("hearStopBtn").hidden = false;
+  $("hearStopBtn").focus();
+  $("hearResult").hidden = true;
+  setBadge($("audioBadge"), high ? "Test aigu…" : "Test grave…", "live");
+}
+
+function endSweep(keepTone) {
+  if (!audio.sweep) return null;
+  const s = audio.sweep;
+  clearTimeout(s.timer);
+  const f = audio.ctx ? sweepCurrentFreq() : NaN;
+  audio.sweep = null;
+  $("highTestBtn").disabled = $("lowTestBtn").disabled = false;
+  freqSlider.disabled = freqInput.disabled = false;
+  $("hearStopBtn").hidden = true;
+  if (!keepTone && audio.voice) stopTone();
+  return { type: s.type, f };
+}
+
+function finishSweep(reachedEnd) {
+  const r = endSweep(true);
+  stopTone();
+  if (!r) return;
+  const out = $("hearResult");
+  out.hidden = false;
+  if (r.type === "high") {
+    if (reachedEnd) {
+      out.innerHTML = `Vous entendez encore à <strong>${fmt(r.f)} Hz</strong> — la limite de votre matériel audio est atteinte. Excellente audition (ou ultrasons restitués par vos enceintes).`;
+      saveResult("hearHigh", Math.round(r.f));
+      return;
+    }
+    out.innerHTML = `Limite aiguë : <strong>${fmt(r.f)} Hz</strong>. ${ageHint(r.f)}`;
+    saveResult("hearHigh", Math.round(r.f));
+  } else {
+    out.innerHTML = reachedEnd
+      ? `Vous entendez encore à <strong>${fmt(r.f)} Hz</strong>. Les très basses fréquences dépendent surtout de vos haut-parleurs ou de votre casque.`
+      : `Limite grave : <strong>${fmt(r.f)} Hz</strong>. Sous ~40 Hz, le résultat dépend fortement de votre matériel.`;
+    saveResult("hearLow", Math.round(r.f));
+  }
+}
+
+function ageHint(f) {
+  // Valeurs moyennes indicatives (presbyacousie)
+  if (f >= 17500) return "Typique d'une oreille de moins de 25 ans.";
+  if (f >= 16000) return "Typique d'une oreille de moins de 30 ans.";
+  if (f >= 15000) return "Typique d'une oreille de moins de 40 ans.";
+  if (f >= 12000) return "Typique d'une oreille de moins de 50 ans.";
+  if (f >= 10000) return "Typique d'une oreille de 50 à 60 ans.";
+  return "Plutôt bas : vérifiez le volume et le matériel ; en cas de doute, consultez un ORL.";
+}
+
+/* ---------- Événements audio ---------- */
+freqSlider.addEventListener("input", () => setFrequency(sliderToFreq(+freqSlider.value), { fromSlider: true }));
+freqInput.addEventListener("input", () => {
+  const f = parseFloat(freqInput.value);
+  if (Number.isFinite(f) && f >= 1) setFrequency(f, { fromInput: true });
+});
+freqInput.addEventListener("change", () => {
+  const f = parseFloat(freqInput.value);
+  setFrequency(Number.isFinite(f) ? f : 440);
+});
+volumeSlider.addEventListener("input", () => {
+  $("volumeValue").textContent = volumeSlider.value + " %";
+  if (audio.master) audio.master.gain.setTargetAtTime(volumeToGain(+volumeSlider.value), audio.ctx.currentTime, 0.03);
+});
+document.querySelectorAll('input[name="wave"]').forEach((r) => r.addEventListener("change", () => {
+  waveType = r.value;
+  if (audio.voice) {
+    audio.voice.osc.type = waveType;
+    audio.voice.env.gain.setTargetAtTime(WAVE_GAIN[waveType], audio.ctx.currentTime, 0.02);
+  }
+}));
+$("playBtn").addEventListener("click", () => startTone());
+$("stopBtn").addEventListener("click", () => stopTone());
+$("highTestBtn").addEventListener("click", () => startSweep("high"));
+$("lowTestBtn").addEventListener("click", () => startSweep("low"));
+$("hearStopBtn").addEventListener("click", () => finishSweep(false));
+
+/* =========================================================
+   2. ÉCRAN
+   ========================================================= */
+const COMMON_HZ = [24, 30, 48, 50, 60, 72, 75, 90, 100, 120, 144, 165, 170, 180, 200, 240, 280, 300, 360, 480, 500];
+let screenHz = 60;
+
+function measureRefreshRate(samples = 120) {
+  return new Promise((resolve) => {
+    const ts = [];
+    const step = (t) => {
+      ts.push(t);
+      if (ts.length < samples) requestAnimationFrame(step);
+      else {
+        const deltas = [];
+        for (let i = 1; i < ts.length; i++) deltas.push(ts[i] - ts[i - 1]);
+        const hz = 1000 / median(deltas);
+        const snap = COMMON_HZ.find((c) => Math.abs(c - hz) / c < 0.04);
+        resolve(snap || Math.round(hz));
+      }
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+async function runScreenTest() {
+  $("screenBtn").disabled = true;
+  setBadge($("screenBadge"), "Mesure…", "live");
+  if (document.hidden) await new Promise((r) => document.addEventListener("visibilitychange", r, { once: true }));
+  screenHz = await measureRefreshRate();
+  $("screenHz").textContent = screenHz;
+  $("frameMs").textContent = fmt(1000 / screenHz, 2);
+  $("screenRes").textContent = `${screen.width} × ${screen.height}`;
+  const dpr = window.devicePixelRatio || 1;
+  $("screenDpr").textContent = `×${fmt(dpr, dpr % 1 ? 2 : 0)}`;
+  setBadge($("screenBadge"), "Mesuré", "ok");
+  $("screenBtn").disabled = false;
+  saveResult("screenHz", screenHz);
+  updateFlickerLimits();
+}
+$("screenBtn").addEventListener("click", runScreenTest);
+
+/* =========================================================
+   3. VISION — fusion du clignotement
+   ========================================================= */
+const flicker = { running: false, auto: null, hz: 5, raf: 0, t0: 0, accepted: false };
+const flickerSlider = $("flickerSlider");
+const dot = $("flickerDot");
+
+function flickerColors() {
+  return document.querySelector('input[name="contrast"]:checked').value === "strong"
+    ? ["#ffffff", "#000000"]
+    : ["#b8b8b8", "#5a5a5a"];
+}
+
+function updateFlickerLimits() {
+  const max = Math.max(1, Math.floor(screenHz / 2));
+  flickerSlider.max = max;
+  $("flickerMax").textContent = max;
+  if (+flickerSlider.value > max) setFlickerHz(max);
+  updateFlickerWarning();
+}
+
+function setFlickerHz(hz) {
+  flicker.hz = hz;
+  flickerSlider.value = Math.round(hz);
+  $("flickerValue").textContent = Number.isInteger(hz) ? hz : fmt(hz, 1);
+  updateFlickerWarning();
+}
+
+function updateFlickerWarning() {
+  const w = $("visionWarn");
+  const framesPerHalf = screenHz / (2 * flicker.hz);
+  if (flicker.running && Math.abs(framesPerHalf - Math.round(framesPerHalf)) > 0.05) {
+    w.hidden = false;
+    w.textContent = `À ${fmt(flicker.hz, 1)} Hz, votre écran (${screenHz} Hz) ne peut pas afficher un rythme parfaitement régulier : un léger battement peut apparaître.`;
+  } else {
+    w.hidden = true;
+  }
+}
+
+function flickerLoop(t) {
+  if (!flicker.running) return;
+  if (!flicker.t0) { flicker.t0 = t; flicker.last = t; flicker.phase = 0; }
+  const elapsed = (t - flicker.t0) / 1000;
+  const dt = (t - flicker.last) / 1000;
+  flicker.last = t;
+  if (flicker.auto) {
+    // Montée exponentielle : +6 % par seconde (précise à basse fréquence, rapide ensuite)
+    const max = +flickerSlider.max;
+    const hz = Math.min(flicker.auto.from * Math.pow(1.06, elapsed), max);
+    if (Math.floor(hz) !== Math.floor(flicker.hz)) setFlickerHz(Math.floor(hz));
+    flicker.hz = hz;
+    if (hz >= max) {
+      flicker.auto.maxAt = flicker.auto.maxAt || t;
+      if (t - flicker.auto.maxAt > 3000) { finishFlickerAuto(true); return; }
+    }
+  }
+  // Phase accumulée sur l'horloge d'affichage (reste correcte quand la fréquence varie)
+  flicker.phase = (flicker.phase + dt * flicker.hz * 2) % 2;
+  const phase = Math.floor(flicker.phase);
+  const [a, b] = flickerColors();
+  dot.style.backgroundColor = phase ? b : a;
+  flicker.raf = requestAnimationFrame(flickerLoop);
+}
+
+async function confirmSeizureWarning() {
+  if (flicker.accepted) return true;
+  const dlg = $("seizureDialog");
+  if (typeof dlg.showModal !== "function") {
+    flicker.accepted = confirm("Ce test affiche des clignotements rapides pouvant déclencher des crises d'épilepsie photosensible. Continuer ?");
+    return flicker.accepted;
+  }
+  dlg.returnValue = "";
+  dlg.showModal();
+  await new Promise((r) => dlg.addEventListener("close", r, { once: true }));
+  flicker.accepted = dlg.returnValue === "ok";
+  return flicker.accepted;
+}
+
+async function startFlicker(auto = false) {
+  if (!(await confirmSeizureWarning())) return;
+  stopFlicker();
+  flicker.running = true;
+  flicker.t0 = 0;
+  if (auto) {
+    flicker.auto = { from: 4 };
+    setFlickerHz(4);
+    flickerSlider.disabled = true;
+    $("flickerStopBtn").hidden = false;
+    $("flickerStopBtn").focus();
+    $("visionResult").hidden = true;
+    $("flickerAutoBtn").disabled = true;
+    setBadge($("visionBadge"), "Test auto…", "live");
+  } else {
+    setBadge($("visionBadge"), "En cours", "live");
+  }
+  $("flickerBtn").textContent = "■ Arrêter";
+  $("flickerBtn").classList.add("danger");
+  updateFlickerWarning();
+  flicker.raf = requestAnimationFrame(flickerLoop);
+}
+
+function stopFlicker() {
+  flicker.running = false;
+  flicker.auto = null;
+  cancelAnimationFrame(flicker.raf);
+  dot.style.backgroundColor = "#808080";
+  flickerSlider.disabled = false;
+  $("flickerStopBtn").hidden = true;
+  $("flickerAutoBtn").disabled = false;
+  $("flickerBtn").textContent = "▶ Démarrer";
+  $("flickerBtn").classList.remove("danger");
+  setBadge($("visionBadge"), "Arrêté");
+  $("visionWarn").hidden = true;
+}
+
+function finishFlickerAuto(reachedMax) {
+  const hz = flicker.hz;
+  const max = +flickerSlider.max;
+  stopFlicker();
+  setFlickerHz(Math.round(hz));
+  const out = $("visionResult");
+  out.hidden = false;
+  if (reachedMax) {
+    out.innerHTML = `Vous percevez encore le clignotement à <strong>${max} Hz</strong>, le maximum que votre écran (${screenHz} Hz) peut afficher. Un écran plus rapide serait nécessaire pour trouver votre limite.`;
+    saveResult("flicker", { hz: max, plus: true });
+  } else {
+    out.innerHTML = `Fusion du clignotement vers <strong>${fmt(hz, 1)} Hz</strong>. Chez l'humain, elle se situe généralement entre 40 et 90 Hz selon la luminosité et la zone de la rétine (la vision périphérique est plus sensible).`;
+    saveResult("flicker", { hz: Math.round(hz * 10) / 10, plus: false });
+  }
+}
+
+flickerSlider.addEventListener("input", () => setFlickerHz(+flickerSlider.value));
+$("flickerBtn").addEventListener("click", () => flicker.running ? stopFlicker() : startFlicker(false));
+$("flickerAutoBtn").addEventListener("click", () => startFlicker(true));
+$("flickerStopBtn").addEventListener("click", () => finishFlickerAuto(false));
+
+/* =========================================================
+   4. RÉSEAU
+   ========================================================= */
+const CF = "https://speed.cloudflare.com";
+const GAUGE = { cx: 150, cy: 150, r: 112, start: -120, end: 120 };
+const TICKS = [0, 5, 10, 25, 50, 100, 250, 500, 1000, 2500];
+const net = { running: false, abort: null, shown: 0, target: 0, raf: 0 };
+
+function polar(angleDeg, r = GAUGE.r) {
+  const a = angleDeg * Math.PI / 180;
+  return [GAUGE.cx + r * Math.sin(a), GAUGE.cy - r * Math.cos(a)];
+}
+function speedToFrac(v) {
+  if (!(v > 0)) return 0;
+  for (let i = 0; i < TICKS.length - 1; i++) {
+    if (v < TICKS[i + 1]) return (i + (v - TICKS[i]) / (TICKS[i + 1] - TICKS[i])) / (TICKS.length - 1);
+  }
+  return 1;
+}
+(function buildGauge() {
+  const [x1, y1] = polar(GAUGE.start);
+  const [x2, y2] = polar(GAUGE.end);
+  const d = `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${GAUGE.r} ${GAUGE.r} 0 1 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+  $("gaugeTrack").setAttribute("d", d);
+  $("gaugeFill").setAttribute("d", d);
+  const g = $("gaugeTicks");
+  TICKS.forEach((t, i) => {
+    const ang = GAUGE.start + (GAUGE.end - GAUGE.start) * (i / (TICKS.length - 1));
+    const [x, y] = polar(ang, GAUGE.r - 26);
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", x.toFixed(1));
+    text.setAttribute("y", y.toFixed(1));
+    text.setAttribute("class", "tick");
+    text.textContent = t >= 1000 ? `${t / 1000}G` : t;
+    g.appendChild(text);
+  });
+})();
+
+function renderGauge(v) {
+  const frac = speedToFrac(v);
+  $("gaugeFill").setAttribute("stroke-dasharray", `${(frac * 1000).toFixed(1)} 1000`);
+  const ang = GAUGE.start + (GAUGE.end - GAUGE.start) * frac;
+  const [x, y] = polar(ang, GAUGE.r - 40);
+  const n = $("gaugeNeedle");
+  n.setAttribute("x2", x.toFixed(2));
+  n.setAttribute("y2", y.toFixed(2));
+  $("gaugeValue").textContent = v >= 0.01 ? fmtSpeed(v) : "0";
+}
+function gaugeLoop() {
+  net.shown += (net.target - net.shown) * 0.15; // lissage
+  if (Math.abs(net.target - net.shown) < 0.01) net.shown = net.target;
+  renderGauge(net.shown);
+  net.raf = net.shown !== net.target || net.running ? requestAnimationFrame(gaugeLoop) : 0;
+}
+function setGauge(v, mode) {
+  net.target = v;
+  if (mode) {
+    $("gauge").classList.toggle("upload", mode === "up");
+    $("gaugeUnit").textContent = mode === "ping" ? "ms" : "Mb/s";
+  }
+  if (!net.raf) net.raf = requestAnimationFrame(gaugeLoop);
+}
+function setProgress(p) { $("netProgress").style.width = (clamp(p, 0, 1) * 100).toFixed(1) + "%"; }
+
+const rnd = () => Math.random().toString(36).slice(2);
+
+async function measureLatency(signal, count = 15) {
+  const samples = [];
+  performance.clearResourceTimings();
+  for (let i = 0; i < count; i++) {
+    if (signal.aborted) throw new DOMException("Aborted", "AbortError");
+    const url = `${CF}/__down?bytes=0&r=${rnd()}`;
+    const t0 = performance.now();
+    const res = await fetch(url, { cache: "no-store", signal });
+    await res.arrayBuffer();
+    let ms = performance.now() - t0;
+    // Mesure plus précise via Resource Timing (le serveur l'autorise)
+    const entry = performance.getEntriesByName(url).pop();
+    if (entry && entry.requestStart > 0 && entry.responseStart > entry.requestStart) {
+      ms = entry.responseStart - entry.requestStart;
+      const st = entry.serverTiming && entry.serverTiming.find((s) => s.name === "cfSpeedWorker" || s.name === "cfRequestDuration");
+      if (st && st.duration < ms) ms -= st.duration;
+    }
+    if (i > 0) samples.push(ms); // la 1re requête inclut DNS + TLS
+    setProgress((i + 1) / count * 0.1);
+    setGauge(ms, "ping");
+    $("netPing").textContent = fmt(median(samples), 1);
+  }
+  const ping = median(samples);
+  let jitter = 0;
+  for (let i = 1; i < samples.length; i++) jitter += Math.abs(samples[i] - samples[i - 1]);
+  jitter /= Math.max(1, samples.length - 1);
+  return { ping, jitter };
+}
+
+/**
+ * Mesure de débit pilotée par la durée : plusieurs connexions en parallèle,
+ * la première seconde (montée en charge TCP) est exclue du résultat final.
+ */
+function throughputTest({ kind, signal, durationMs, streams, progressOffset, progressSpan, onSpeed }) {
+  return new Promise((resolve) => {
+    const ctrl = new AbortController();
+    const abortAll = () => ctrl.abort();
+    signal.addEventListener("abort", abortAll, { once: true });
+
+    let bytes = 0;
+    const start = performance.now();
+    const WARMUP = 1000;
+    let warmBytes = null, warmTime = 0;
+    const history = []; // [t, bytes] pour la vitesse instantanée
+    let failures = 0;
+
+    const tick = setInterval(() => {
       const now = performance.now();
-      while (frameTimes.length > 0 && now - frameTimes[0] > 1000) frameTimes.shift();
-      frameTimes.push(now);
-      currentScreenHz = frameTimes.length > 10 ? frameTimes.length : 60; 
-      document.getElementById("screenHz").innerText = currentScreenHz;
-      document.getElementById("maxBlinkHzUI").innerText = currentScreenHz;
-      document.getElementById("fpsSlider").max = currentScreenHz;
-      requestAnimationFrame(detectSystemMetrics);
+      const el = now - start;
+      if (warmBytes === null && el >= WARMUP) { warmBytes = bytes; warmTime = now; }
+      history.push([now, bytes]);
+      while (history.length > 2 && now - history[0][0] > 1500) history.shift();
+      const [t0, b0] = history[0];
+      if (now > t0) onSpeed((bytes - b0) * 8 / ((now - t0) / 1000) / 1e6);
+      setProgress(progressOffset + progressSpan * Math.min(1, el / durationMs));
+      if (el >= durationMs) finish();
+    }, 200);
+
+    let done = false;
+    function finish() {
+      if (done) return;
+      done = true;
+      clearInterval(tick);
+      ctrl.abort();
+      signal.removeEventListener("abort", abortAll);
+      const end = performance.now();
+      let mbps;
+      if (warmBytes !== null && end - warmTime > 500) mbps = (bytes - warmBytes) * 8 / ((end - warmTime) / 1000) / 1e6;
+      else mbps = bytes * 8 / ((end - start) / 1000) / 1e6;
+      resolve({ mbps, bytes, failed: bytes === 0 && failures > 0 });
     }
-    requestAnimationFrame(detectSystemMetrics);
 
-    /* =========================================
-       3. PERCEPTION VISUELLE (Code d'origine gardé)
-       ========================================= */
-    const circle = document.getElementById("circle");
-    const fpsSlider = document.getElementById("fpsSlider");
-    const visualWarn = document.getElementById("visualLimitMsg");
-    let targetHz = 1;
+    const CHUNK = kind === "down" ? 25e6 : 4e6;
+    const uploadBlob = kind === "up" ? makeUploadBlob(CHUNK) : null;
 
-    fpsSlider.addEventListener('input', (e) => {
-      targetHz = parseInt(e.target.value);
-      document.getElementById("fpsValue").innerText = targetHz;
+    async function downWorker() {
+      while (!ctrl.signal.aborted) {
+        try {
+          const res = await fetch(`${CF}/__down?bytes=${CHUNK}&r=${rnd()}`, { cache: "no-store", signal: ctrl.signal });
+          if (!res.ok || !res.body) throw new Error("HTTP " + res.status);
+          const reader = res.body.getReader();
+          for (;;) {
+            const { done: d, value } = await reader.read();
+            if (d) break;
+            bytes += value.byteLength;
+          }
+        } catch (e) {
+          if (ctrl.signal.aborted) return;
+          if (++failures > 6) return finish();
+          await new Promise((r) => setTimeout(r, 300));
+        }
+      }
+    }
+    function upWorker() {
+      return new Promise((res) => {
+        const loop = () => {
+          if (ctrl.signal.aborted) return res();
+          const xhr = new XMLHttpRequest();
+          let last = 0;
+          xhr.upload.onprogress = (e) => { bytes += e.loaded - last; last = e.loaded; };
+          xhr.onload = () => { bytes += CHUNK - last; last = CHUNK; loop(); };
+          xhr.onerror = () => { if (++failures > 6) { finish(); res(); } else setTimeout(loop, 300); };
+          xhr.onabort = () => res();
+          ctrl.signal.addEventListener("abort", () => xhr.abort(), { once: true });
+          xhr.open("POST", `${CF}/__up?r=${rnd()}`);
+          xhr.send(uploadBlob);
+        };
+        loop();
+      });
+    }
+    for (let i = 0; i < streams; i++) (kind === "down" ? downWorker : upWorker)();
+  });
+}
+
+let uploadBlobCache = null;
+function makeUploadBlob(size) {
+  if (uploadBlobCache && uploadBlobCache.size === size) return uploadBlobCache;
+  // Données aléatoires (non compressibles), générées par blocs de 64 Ko
+  const block = new Uint8Array(65536);
+  crypto.getRandomValues(block);
+  const parts = [];
+  for (let n = 0; n < size; n += block.length) parts.push(block);
+  uploadBlobCache = new Blob(parts).slice(0, size);
+  return uploadBlobCache;
+}
+
+async function runNetworkTest() {
+  if (net.running) { net.abort.abort(); return; }
+  net.running = true;
+  net.abort = new AbortController();
+  const signal = net.abort.signal;
+  const btn = $("netBtn");
+  btn.textContent = "■ Annuler";
+  btn.classList.add("danger");
+  $("netError").hidden = true;
+  ["netPing", "netJitter", "netDown", "netUp"].forEach((id) => $(id).textContent = "--");
+  setProgress(0);
+
+  const out = {};
+  try {
+    setBadge($("netBadge"), "Latence…", "live");
+    const lat = await measureLatency(signal);
+    out.ping = lat.ping; out.jitter = lat.jitter;
+    $("netPing").textContent = fmt(lat.ping, 1);
+    $("netJitter").textContent = fmt(lat.jitter, 1);
+
+    setBadge($("netBadge"), "Réception…", "live");
+    setGauge(0, "down");
+    const down = await throughputTest({
+      kind: "down", signal, durationMs: 10000, streams: 4, progressOffset: 0.1, progressSpan: 0.45,
+      onSpeed: (v) => { setGauge(v); $("netDown").textContent = fmtSpeed(v); },
     });
+    if (signal.aborted) throw new DOMException("Aborted", "AbortError");
+    if (down.failed) throw new Error("download");
+    out.down = down.mbps;
+    $("netDown").textContent = fmtSpeed(down.mbps);
 
-    function animateCircle() {
-      const state = Math.floor((performance.now() / 1000) * targetHz * 2) % 2;
-      circle.style.backgroundColor = state === 0 ? "var(--danger)" : "#ecf0f1";
+    setBadge($("netBadge"), "Envoi…", "live");
+    setGauge(0, "up");
+    const up = await throughputTest({
+      kind: "up", signal, durationMs: 8000, streams: 3, progressOffset: 0.55, progressSpan: 0.45,
+      onSpeed: (v) => { setGauge(v); $("netUp").textContent = fmtSpeed(v); },
+    });
+    if (signal.aborted) throw new DOMException("Aborted", "AbortError");
+    if (up.failed) throw new Error("upload");
+    out.up = up.mbps;
+    $("netUp").textContent = fmtSpeed(up.mbps);
 
-      if (targetHz > currentScreenHz / 2 && targetHz < currentScreenHz) {
-        visualWarn.innerText = "⚠️ Artefact : La fréquence dépasse la moitié de vos FPS.";
-      } else if (targetHz >= currentScreenHz) {
-        visualWarn.innerText = "⚠️ Limite : À " + targetHz + "Hz, l'image semble fixe.";
-      } else {
-        visualWarn.innerText = "";
-      }
-      requestAnimationFrame(animateCircle);
+    setProgress(1);
+    setGauge(out.down, "down");
+    setBadge($("netBadge"), "Terminé", "ok");
+    saveResult("net", { ping: +out.ping.toFixed(1), jitter: +out.jitter.toFixed(1), down: +out.down.toFixed(2), up: +out.up.toFixed(2) });
+  } catch (e) {
+    setGauge(0);
+    setProgress(0);
+    if (e.name === "AbortError" || signal.aborted) {
+      setBadge($("netBadge"), "Annulé");
+    } else {
+      setBadge($("netBadge"), "Erreur");
+      const err = $("netError");
+      err.hidden = false;
+      err.textContent = !navigator.onLine
+        ? "Vous semblez hors ligne. Vérifiez votre connexion puis réessayez."
+        : "Impossible de joindre le serveur de test. Un bloqueur de publicité, un pare-feu ou un VPN bloque peut-être speed.cloudflare.com.";
     }
-    requestAnimationFrame(animateCircle);
+  } finally {
+    net.running = false;
+    btn.textContent = "▶ Relancer le test";
+    btn.classList.remove("danger");
+  }
+}
+$("netBtn").addEventListener("click", runNetworkTest);
 
-    /* =========================================
-       4. AUDIO (Code d'origine gardé)
-       ========================================= */
-    let audioCtx, oscillator, gainNode, analyser, isPlaying = false, animationId;
-    const freqInput = document.getElementById("freqInput"), freqSliderLog = document.getElementById("freqSliderLog"), 
-          volumeSlider = document.getElementById("volumeSlider"), canvas = document.getElementById("waveVisual"), ctx = canvas.getContext("2d");
+/* =========================================================
+   5. RÉSUMÉ, PARTAGE, RÉINITIALISATION
+   ========================================================= */
+function renderSummary() {
+  const r = results;
+  $("sumHigh").textContent = r.hearHigh ? `${fmt(r.hearHigh)} Hz` : "--";
+  $("sumLow").textContent = r.hearLow ? `${fmt(r.hearLow)} Hz` : "--";
+  $("sumFlicker").textContent = r.flicker ? `${r.flicker.plus ? "≥ " : ""}${fmt(r.flicker.hz, r.flicker.hz % 1 ? 1 : 0)} Hz` : "--";
+  $("sumScreen").textContent = r.screenHz ? `${r.screenHz} Hz` : "--";
+  $("sumNet").textContent = r.net ? `${fmtSpeed(r.net.down)} / ${fmtSpeed(r.net.up)} Mb/s` : "--";
+  $("sumPing").textContent = r.net ? `${fmt(r.net.ping, 1)} ms` : "--";
+}
 
-    canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
-    const minFreq = 1, maxFreq = 25000;
+function summaryText() {
+  const lines = ["🧠 Mes résultats — Test de Perception Humaine"];
+  const r = results;
+  if (r.hearHigh) lines.push(`🔊 Limite aiguë : ${fmt(r.hearHigh)} Hz`);
+  if (r.hearLow) lines.push(`🔈 Limite grave : ${fmt(r.hearLow)} Hz`);
+  if (r.flicker) lines.push(`👁️ Fusion du clignotement : ${r.flicker.plus ? "≥ " : ""}${fmt(r.flicker.hz, 1)} Hz`);
+  if (r.screenHz) lines.push(`🖥️ Écran : ${r.screenHz} Hz`);
+  if (r.net) lines.push(`🌐 ${fmtSpeed(r.net.down)} ⬇ / ${fmtSpeed(r.net.up)} ⬆ Mb/s · ${fmt(r.net.ping, 1)} ms`);
+  lines.push(location.href.split(/[?#]/)[0]);
+  return lines.join("\n");
+}
 
-    function applyFreq(f) {
-      updateAudibilityPercentage(f);
-      if (oscillator && isPlaying) oscillator.frequency.setTargetAtTime(f, audioCtx.currentTime, 0.03);
-    }
+$("shareBtn").addEventListener("click", async () => {
+  const text = summaryText();
+  if (navigator.share && matchMedia("(pointer: coarse)").matches) {
+    try { await navigator.share({ title: "Test de Perception Humaine", text }); return; } catch (e) { if (e.name === "AbortError") return; }
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    toast("Résultats copiés dans le presse-papiers ✓");
+  } catch {
+    toast("Copie impossible sur ce navigateur.");
+  }
+});
 
-    freqSliderLog.oninput = () => {
-      const f = Math.round(Math.exp((freqSliderLog.value / 1000) * Math.log(maxFreq / minFreq)) * minFreq);
-      freqInput.value = f; applyFreq(f);
-    };
+function stopEverything() {
+  if (audio.sweep) endSweep(false);
+  stopTone();
+  stopFlicker();
+  if (net.running) net.abort.abort();
+}
 
-    freqInput.oninput = () => {
-      const f = Math.min(maxFreq, parseInt(freqInput.value) || minFreq);
-      freqSliderLog.value = Math.round((Math.log(f / minFreq) / Math.log(maxFreq / minFreq)) * 1000);
-      applyFreq(f);
-    };
+$("resetBtn").addEventListener("click", () => {
+  stopEverything();
+  volumeSlider.value = 25; volumeSlider.dispatchEvent(new Event("input"));
+  document.querySelector('input[name="wave"][value="sine"]').click();
+  document.querySelector('input[name="contrast"][value="soft"]').checked = true;
+  setFrequency(440);
+  setFlickerHz(5);
+  ["hearResult", "visionResult", "netError"].forEach((id) => $(id).hidden = true);
+  ["netPing", "netJitter", "netDown", "netUp"].forEach((id) => $(id).textContent = "--");
+  setGauge(0, "down"); setProgress(0);
+  setBadge($("netBadge"), "Prêt");
+  $("netBtn").textContent = "▶ Lancer le test";
+  Object.keys(results).forEach((k) => delete results[k]);
+  saveResult("screenHz", screenHz);
+  toast("Tout a été réinitialisé.");
+});
 
-    volumeSlider.oninput = () => {
-      document.getElementById("volumeValue").innerText = volumeSlider.value + "%";
-      if (gainNode) gainNode.gain.setTargetAtTime(volumeSlider.value / 100, audioCtx.currentTime, 0.03);
-    };
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !$("seizureDialog").open) stopEverything();
+});
+// Couper le son et le clignotement si l'onglet passe en arrière-plan
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) { stopFlicker(); if (audio.voice) stopTone(); }
+});
 
-    document.getElementById("btnPlay").onclick = () => {
-      if (isPlaying) return;
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      gainNode = audioCtx.createGain(); analyser = audioCtx.createAnalyser();
-      oscillator = audioCtx.createOscillator();
-      oscillator.connect(gainNode); gainNode.connect(analyser); analyser.connect(audioCtx.destination);
-      oscillator.frequency.value = freqInput.value;
-      gainNode.gain.value = volumeSlider.value / 100;
-      oscillator.start(); isPlaying = true; visualizeWave();
-    };
-
-    document.getElementById("btnStop").onclick = () => {
-      if (oscillator) oscillator.stop(); isPlaying = false;
-    };
-
-    function visualizeWave() {
-      if (!isPlaying) return;
-      requestAnimationFrame(visualizeWave);
-      const data = new Uint8Array(analyser.frequencyBinCount);
-      analyser.getByteTimeDomainData(data);
-      ctx.fillStyle = "#2c3e50"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.lineWidth = 2; ctx.strokeStyle = "var(--primary)"; ctx.beginPath();
-      let x = 0;
-      for (let i = 0; i < data.length; i++) {
-        let y = (data[i] / 128.0) * canvas.height / 2;
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-        x += canvas.width / data.length;
-      }
-      ctx.stroke();
-    }
-
-    function updateAudibilityPercentage(freq) {
-      let p = 0;
-      if (freq >= 20 && freq <= 10000) p = 100;
-      else if (freq > 10000 && freq <= 20000) p = 50;
-      document.getElementById("audibilityPercentage").innerText = p + "%";
-    }
-
-    function resetAll() {
-      fpsSlider.value = 1; fpsSlider.dispatchEvent(new Event('input'));
-      freqInput.value = 440; freqInput.dispatchEvent(new Event('input'));
-      volumeSlider.value = 50; volumeSlider.dispatchEvent(new Event('input'));
-      document.getElementById("btnStop").click();
-    }
-  </script>
+/* ---------- Initialisation ---------- */
+updateFreqUI(440);
+renderGauge(0);
+renderSummary();
+drawWave();
+runScreenTest();
+</script>
 </body>
 </html>
